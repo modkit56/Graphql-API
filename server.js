@@ -1,7 +1,10 @@
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 const dotEnv = require("dotenv");
+
+const resolvers = require("./resolvers");
+const typeDefs = require("./typeDefs");
 
 let build = async () => {
   // setting up enrionment variables
@@ -14,14 +17,6 @@ let build = async () => {
 
   // body parser middleware
   app.use(express.json());
-
-  const typeDefs = gql`
-    type Query {
-      greetings: String
-    }
-  `;
-
-  const resolvers = {};
 
   const apolloServer = new ApolloServer({
     typeDefs,
