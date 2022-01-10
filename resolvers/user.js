@@ -1,11 +1,31 @@
+const bcrypt = require("bcryptjs");
+const { GraphQLSpecifiedByDirective } = require("graphql");
+
 const { users, tasks } = require("../constants");
+const User = require("../database/models/user");
 
 module.exports = {
   Query: {
     users: () => users,
     user: (_, { id }) => users.find((users) => users.id === id),
   },
-  Mutation: {},
+  Mutation: {
+    signup: async (_, { input }) => {
+      try {
+        const user = await User.findOne({ email: input.email });
+        if (user) {
+          throw new Error("Email already in use");
+        }
+        const hashedPassword = await bcrypt.hash(input.password, 12);
+        const newUser = new User({ ...input, password: hashedPassword });
+        const result = await newUser.save();
+        return result;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+  },
   User: {
     tasks: ({ id }) => tasks.filter((task) => task.userId === id),
   },

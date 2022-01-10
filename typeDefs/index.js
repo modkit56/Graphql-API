@@ -5,6 +5,8 @@ const taskTypeDefs = require("./task");
 
 // placeholder query
 const typeDefs = gql`
+  scalar Date
+
   type Query {
     _: String
   }
